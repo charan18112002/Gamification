@@ -1,9 +1,9 @@
-function goToStudentGame() {
+function goToStudentGames() {
   alert('Loading...');
-  // Example: window.location.href = 'student-game.html';
+  window.location.href = 'game.html';
 }
 
 function goToQuiz() {
-  alert('Loading to Quiz...');
-  // Example: window.location.href = 'quiz.html';
+  alert('Loading...');
+  window.location.href = 'quiz.html';
 }
