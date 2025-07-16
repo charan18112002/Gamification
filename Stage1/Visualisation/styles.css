@@ -1,0 +1,45 @@
+.hbox {
+    background-color: black;
+    text-align: center;
+    margin: 50px auto 20px auto;
+    width: 15%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.hbox h1 {
+    font-weight: bold;
+    background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    animation: gradientShift 1s infinite linear;
+}
+body{
+    background-image: url('BG2.jpg');
+}
+.container {
+    display: flex;
+    gap: 50px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.box{
+    background: rgba(255, 255, 255, 0.85);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    width: 250px;
+}
+.box h2 {
+    margin-bottom: 15px;
+    font-size: 28px;
+}
+.box:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+

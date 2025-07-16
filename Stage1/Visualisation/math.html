@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bubu & Dudu Quiz Game</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive;
+      background: #fef4e8;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .quiz-container {
+      background: #fff9f3;
+      border-radius: 15px;
+      box-shadow: 0 0 15px #d1c4e9;
+      padding: 30px;
+      max-width: 600px;
+      width: 90%;
+      text-align: center;
+      position: relative;
+    }
+
+    #question {
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+    }
+
+    #hint {
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    #answerInput {
+      font-size: 1.2rem;
+      padding: 10px;
+      width: 80%;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+
+    #submitBtn {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #ffb74d;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    #submitBtn:hover {
+      background-color: #ffa000;
+    }
+
+    #result {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    /* Bubu Animation Section */
+    .bubu-wrapper {
+      position: relative;
+      width: 150px;
+      margin: 0 auto 20px;
+      animation: bubuBounce 3s ease-in-out infinite;
+    }
+
+    .bubu-face {
+      width: 100%;
+      border-radius: 15px;
+      user-select: none;
+    }
+
+    /* Mouth */
+    .bubu-mouth {
+      position: absolute;
+      bottom: 25px;
+      left: 50%;
+      width: 30px;
+      height: 20px;
+      background: radial-gradient(circle at center, #333 60%, transparent 61%);
+      border-radius: 50%;
+      transform: translateX(-50%);
+      animation: mouthTalk 0.4s ease-in-out infinite;
+      display: none;
+    }
+
+    @keyframes mouthTalk {
+      0%   { transform: translateX(-50%) scaleY(1); }
+      50%  { transform: translateX(-50%) scaleY(0.2); }
+      100% { transform: translateX(-50%) scaleY(1); }
+    }
+
+    /* Eyes */
+    .bubu-eye {
+      position: absolute;
+      width: 20px;
+      height: 10px;
+      background: black;
+      border-radius: 50%;
+      top: 45px; /* Adjust to fit your face image */
+      animation: blink 5s infinite;
+      user-select: none;
+    }
+
+    .bubu-eye.left {
+      left: 40px;
+    }
+
+    .bubu-eye.right {
+      left: 90px;
+    }
+
+    @keyframes blink {
+      0%, 97%, 100% { height: 10px; }
+      98%, 99% { height: 2px; }
+    }
+
+    /* Idle bounce */
+    @keyframes bubuBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Celebration GIF */
+    .center-gif {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 150px;
+      display: none;
+      z-index: 5;
+      pointer-events: none;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container" id="quizBox">
+    
+    <!-- Celebration GIF (shown when correct) -->
+    <img src="dudu-hit-bubu.gif" class="center-gif" id="celebrateGif" alt="Bubu Celebration" />
+
+    <!-- Bubu face with animated mouth and eyes -->
+    <div class="bubu-wrapper" aria-label="Bubu character animation">
+      <img src="bubu-idle.png" class="bubu-face" alt="Bubu" id="bubuFace" draggable="false" />
+      <div class="bubu-eye left"></div>
+      <div class="bubu-eye right"></div>
+      <div class="bubu-mouth" id="bubuMouth"></div>
+    </div>
+
+    <div id="question">Loading question...</div>
+    <div id="hint">Please help Bubu solve this question! 🐼</div>
+    <input type="text" id="answerInput" placeholder="Type your answer" autocomplete="off" />
+    <br />
+    <button id="submitBtn">Submit</button>
+    <div id="result" role="alert" aria-live="polite"></div>
+  </div>
+
+  <script>
+    const quizData = [
+      { q: "🍎 How many apples in 3 + 2?", a: "5" },
+      { q: "🍌 What is 6 bananas minus 2?", a: "4" },
+      { q: "🍇 3 grapes × 2 bunches = ?", a: "6" },
+      { q: "🥕 8 carrots ÷ 2 friends = ?", a: "4" },
+      { q: "🔺 How many sides does a triangle have?", a: "3" },
+      { q: "🍏 Count the apples: 🍏🍏🍏🍏", a: "4" },
+      { q: "🟦 How many corners does a square have?", a: "4" }
+    ];
+
+    let current = 0;
+
+    const questionEl = document.getElementById("question");
+    const answerInput = document.getElementById("answerInput");
+    const submitBtn = document.getElementById("submitBtn");
+    const resultEl = document.getElementById("result");
+    const celebrateGif = document.getElementById("celebrateGif");
+    const bubuMouth = document.getElementById("bubuMouth");
+    const bubuFace = document.getElementById("bubuFace");
+
+    // Helper: Change Bubu facial expression
+    function setBubuExpression(expression) {
+      switch (expression) {
+        case "idle":
+          bubuFace.src = "bubu-idle.png";
+          break;
+        case "happy":
+          bubuFace.src = "bubu-happy.png";
+          break;
+        case "sad":
+          bubuFace.src = "bubu-sad.png";
+          break;
+        case "thinking":
+          bubuFace.src = "bubu-thinking.png";
+          break;
+        default:
+          bubuFace.src = "bubu-idle.png";
+      }
+    }
+
+    // Speech + mouth animation
+    function speak(text, isIntro = false) {
+      const utterance = new SpeechSynthesisUtterance();
+      const kidIntros = [
+        "Let's see...",
+        "Can you help me with this?",
+        "Hmm...",
+        "Try this one!",
+        "Okay, listen!"
+      ];
+
+      bubuMouth.style.display = "block"; // show mouth while talking
+
+      utterance.text = isIntro
+        ? `${kidIntros[Math.floor(Math.random() * kidIntros.length)]} ${text}`
+        : text;
+      utterance.lang = 'en-US';
+      utterance.pitch = 1.6;
+      utterance.rate = 0.95;
+
+      utterance.onend = () => {
+        bubuMouth.style.display = "none"; // hide mouth after talking
+      };
+
+      speechSynthesis.cancel();
+      speechSynthesis.speak(utterance);
+    }
+
+    function showQuestion() {
+      setBubuExpression("thinking");
+      const q = quizData[current].q;
+      questionEl.textContent = q;
+      answerInput.value = "";
+      resultEl.textContent = "";
+      speak(q, true); // speak with intro
+      setBubuExpression("idle");
+    }
+
+    function celebrate() {
+      celebrateGif.style.display = "block";
+      setTimeout(() => {
+        celebrateGif.style.display = "none";
+        current = (current + 1) % quizData.length;
+        showQuestion();
+      }, 2000);
+    }
+
+    function checkAnswer() {
+      const userAnswer = answerInput.value.trim().toLowerCase();
+      const correctAnswer = quizData[current].a.toLowerCase();
+
+      if (!userAnswer) {
+        resultEl.style.color = "#444";
+        resultEl.textContent = "Please enter your answer!";
+        return;
+      }
+
+      if (userAnswer === correctAnswer) {
+        resultEl.style.color = "green";
+        resultEl.textContent = "Correct! 🎉";
+        setBubuExpression("happy");
+        speak("Yay! You got it right!");
+        celebrate();
+      } else {
+        resultEl.style.color = "red";
+        resultEl.textContent = `Oops! The correct answer was "${quizData[current].a}".`;
+        setBubuExpression("sad");
+        speak("Oops! Try the next one!");
+        current = (current + 1) % quizData.length;
+        setTimeout(() => {
+          setBubuExpression("idle");
+          showQuestion();
+        }, 2000);
+      }
+    }
+
+    submitBtn.addEventListener("click", checkAnswer);
+
+    answerInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        checkAnswer();
+      }
+    });
+
+    window.addEventListener("load", showQuestion);
+  </script>
+</body>
+</html>
