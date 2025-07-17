@@ -1,69 +1,37 @@
-# React + TypeScript + Vite
+# 🎓 EduPlay - Interactive Learning for Kids (Class 1 to 5)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Gamification** is a fun and educational web application designed for children studying in Classes 1 to 5. It combines interactive quizzes and simple brain-boosting games to promote learning in a playful way. The platform is built using modern technologies and includes user authentication, leaderboard tracking, and text-to-speech support for accessibility.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+##  Features
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+-  **Authentication**: Secure Sign Up / Login using username, email, and password.
+-  **Quiz Section**:
+  - Class-wise (1 to 5) & subject-wise (Maths & Science) quizzes
+  - Scoreboard at the end with performance breakdown
+  - Timer-based questions
+  - Text-to-Speech support for questions & options
+-  **Game Section**:
+  - Includes 5 educational games like puzzles, matching, sorting, memory, and more
+-  **Leaderboard**:
+  - Track player scores across quizzes and see how you rank
+-  **Responsive Design**: Mobile-first UI with Tailwind CSS
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+##  Tech Stack
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+| Layer       | Technology                      |
+|-------------|----------------------------------|
+| Frontend    | React.js (Vite), TypeScript, Tailwind CSS |
+| Backend     | Node.js, Express.js              |
+| Database    | MySQL                            |
+| Auth        | JWT-based Authentication         |
+| TTS         | Web Speech API (`SpeechSynthesis`) |
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+
